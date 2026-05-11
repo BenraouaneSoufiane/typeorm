@@ -1152,6 +1152,9 @@ export class OracleQueryRunner extends BaseQueryRunner implements QueryRunner {
                 newColumn.generationStrategy !== "uuid") ||
             (oldColumn.type !== newColumn.type &&
                 !this.canAlterColumnTypeInPlace(oldColumn, newColumn)) ||
+            Boolean(
+                oldColumn.generatedIdentity ?? newColumn.generatedIdentity,
+            ) ||
             oldColumn.generatedType !== newColumn.generatedType ||
             oldColumn.asExpression !== newColumn.asExpression
         ) {

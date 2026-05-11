@@ -1074,6 +1074,7 @@ export class AuroraMysqlQueryRunner
         } else {
             // Track whether a rename occurred to avoid conflicting with fast paths
             let columnRenamed = false
+            let handledByHelper = false
 
             if (newColumn.name !== oldColumn.name) {
                 // We don't change any column properties, just rename it.
@@ -1217,7 +1218,7 @@ export class AuroraMysqlQueryRunner
             }
 
             if (oldColumn.type !== newColumn.type) {
-                const handled = await this.alterColumnType(
+                handledByHelper = await this.alterColumnType(
                     table,
                     clonedTable,
                     oldColumn,
@@ -1225,13 +1226,12 @@ export class AuroraMysqlQueryRunner
                     upQueries,
                     downQueries,
                 )
-                if (handled) return
             } else if (
                 !columnRenamed &&
                 oldColumn?.type === newColumn?.type &&
                 oldColumn?.length !== newColumn?.length
             ) {
-                const handled = await this.alterColumnLength(
+                handledByHelper = await this.alterColumnLength(
                     table,
                     clonedTable,
                     oldColumn,
@@ -1239,10 +1239,12 @@ export class AuroraMysqlQueryRunner
                     upQueries,
                     downQueries,
                 )
-                if (handled) return
             }
 
-            if (this.isColumnChanged(oldColumn, newColumn, true)) {
+            if (
+                !handledByHelper &&
+                this.isColumnChanged(oldColumn, newColumn, true)
+            ) {
                 upQueries.push(
                     new Query(
                         `ALTER TABLE ${this.escapePath(table)} CHANGE \`${
