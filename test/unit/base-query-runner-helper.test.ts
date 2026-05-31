@@ -344,42 +344,41 @@ describe("BaseQueryRunnerHelper.isSafeAlter – additional coverage", () => {
 })
 
 describe("BaseQueryRunnerHelper.isSafeAlter – branch coverage", () => {
-    // Lines 184-187: special families always block within-family alters
-    describe("special families block same-family alters", () => {
-        it("blocks BOOLEAN -> BOOLEAN", () => {
+    describe("special families and no-op changes", () => {
+        it("allows BOOLEAN -> BOOLEAN as a no-op type change", () => {
             expect(
                 isSafeAlter(col({ type: "boolean" }), col({ type: "boolean" })),
-            ).to.equal(false)
+            ).to.equal(true)
         })
         it("blocks BIT -> BOOL", () => {
             expect(
                 isSafeAlter(col({ type: "bit" }), col({ type: "bool" })),
             ).to.equal(false)
         })
-        it("blocks ENUM -> ENUM", () => {
+        it("allows ENUM -> ENUM as a no-op type change", () => {
             expect(
                 isSafeAlter(col({ type: "enum" }), col({ type: "enum" })),
-            ).to.equal(false)
+            ).to.equal(true)
         })
-        it("blocks SET -> SET", () => {
+        it("allows SET -> SET as a no-op type change", () => {
             expect(
                 isSafeAlter(col({ type: "set" }), col({ type: "set" })),
-            ).to.equal(false)
+            ).to.equal(true)
         })
-        it("blocks UUID -> UUID", () => {
+        it("allows UUID -> UUID as a no-op type change", () => {
             expect(
                 isSafeAlter(col({ type: "uuid" }), col({ type: "uuid" })),
-            ).to.equal(false)
+            ).to.equal(true)
         })
-        it("blocks BINARY -> BINARY", () => {
+        it("allows BINARY -> BINARY as a no-op type change", () => {
             expect(
                 isSafeAlter(col({ type: "binary" }), col({ type: "binary" })),
-            ).to.equal(false)
+            ).to.equal(true)
         })
-        it("blocks BYTEA -> BYTEA", () => {
+        it("allows BYTEA -> BYTEA as a no-op type change", () => {
             expect(
                 isSafeAlter(col({ type: "bytea" }), col({ type: "bytea" })),
-            ).to.equal(false)
+            ).to.equal(true)
         })
     })
 
