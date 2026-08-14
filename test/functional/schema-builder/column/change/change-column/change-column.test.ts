@@ -393,17 +393,14 @@ describe("schema builder > change column", () => {
                 } catch (e) {
                     testErr = e
                 } finally {
-                    // Revert & clean up the isolated connection
+                    // The connection is isolated and disposable, so only restore its
+                    // metadata. Synchronizing back to the original string column
+                    // would be a narrowing FLOAT -> VARCHAR change; SQL Server
+                    // implements that as drop/add and rejects adding a NOT NULL
+                    // column when the table has data.
                     versionCol.type = originalType
                     ;(versionCol as any).precision = originalPrecision
                     versionCol.build(connection)
-                    let revertErr
-                    try {
-                        await connection.synchronize()
-                    } catch (e) {
-                        revertErr = e
-                    }
-                    expect(revertErr).to.be.undefined
                     await closeTestingConnections(conns)
                 }
                 expect(testErr).to.be.undefined

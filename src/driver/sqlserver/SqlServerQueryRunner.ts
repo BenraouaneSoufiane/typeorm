@@ -1386,6 +1386,7 @@ export class SqlServerQueryRunner
         } else {
             // Track whether a rename occurred to avoid conflicting with fast paths
             let columnRenamed = false
+            let typeAltered = false
 
             if (newColumn.name !== oldColumn.name) {
                 // we need database name and schema name to rename FK constraints
@@ -1742,7 +1743,7 @@ export class SqlServerQueryRunner
                     )
                 }
 
-                await this.alterColumnType(
+                typeAltered = await this.alterColumnType(
                     table,
                     clonedTable,
                     oldColumn,
@@ -1782,6 +1783,7 @@ export class SqlServerQueryRunner
             }
 
             if (
+                !typeAltered &&
                 this.isColumnChanged(oldColumn, newColumn, false, false, false)
             ) {
                 // SQL Server refuses ALTER COLUMN when a unique constraint or index
@@ -2958,6 +2960,7 @@ export class SqlServerQueryRunner
      * Note: this operation uses SQL's TRUNCATE query which cannot be reverted in transactions.
      *
      * @param tablePath
+     * @param options
      * @param options.cascade
      */
     async clearTable(
@@ -4585,6 +4588,10 @@ export class SqlServerQueryRunner
     /**
      * Handles column length changes for SQL Server.
      *
+     * @param oldColumn
+     * @param newColumn
+     * @param table
+     * @param upQueries
      */
     private alterColumnLength(
         oldColumn: TableColumn,
@@ -4663,6 +4670,12 @@ export class SqlServerQueryRunner
      * Handles safe ALTER COLUMN changes for SQL Server.
      * Returns true if change was handled.
      *
+     * @param table
+     * @param clonedTable
+     * @param oldColumn
+     * @param newColumn
+     * @param upQueries
+     * @param downQueries
      */
     private async alterColumnType(
         table: Table,
@@ -4687,7 +4700,7 @@ export class SqlServerQueryRunner
         // We must drop it before altering and re-add it afterwards.
         const hasDefault =
             oldColumn.default !== null && oldColumn.default !== undefined
-        const quoteIdent = (i: string) => `[${i.replaceAll("]", "]]")}]`
+        const quoteIdent = (i: string) => this.driver.escape(i)
 
         if (hasDefault) {
             const defName =
