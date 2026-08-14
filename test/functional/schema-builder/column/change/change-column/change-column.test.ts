@@ -575,8 +575,8 @@ describe("schema builder > change column", () => {
                         ])
                     } else if (driver === "oracle") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
-                            'ALTER TABLE "post" MODIFY ("name" TIMESTAMP(6))',
-                            'ALTER TABLE "post" MODIFY "name" TIMESTAMP(6)',
+                            'ALTER TABLE "post" MODIFY ("name" timestamp(6))',
+                            'ALTER TABLE "post" MODIFY "name" timestamp(6)',
                         ])
                     }
 
