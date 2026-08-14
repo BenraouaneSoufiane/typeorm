@@ -197,8 +197,8 @@ describe("schema builder > change column", () => {
                     } else if (driver === "mssql") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
                             'ALTER TABLE "post" DROP CONSTRAINT "DF_3b67503bc127f16f995481181a3"',
-                            'ALTER TABLE "post" ALTER COLUMN [name] varchar(50) NULL',
-                            'ALTER TABLE "post" ADD CONSTRAINT "DF_3b67503bc127f16f995481181a3" DEFAULT \'My post\' FOR [name]',
+                            'ALTER TABLE "post" ALTER COLUMN "name" varchar(50) NULL',
+                            'ALTER TABLE "post" ADD CONSTRAINT "DF_3b67503bc127f16f995481181a3" DEFAULT \'My post\' FOR "name"',
                         ])
                     } else if (driver === "oracle") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
@@ -570,8 +570,8 @@ describe("schema builder > change column", () => {
                     } else if (driver === "mssql") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
                             'ALTER TABLE "post" DROP CONSTRAINT "DF_3b67503bc127f16f995481181a3"',
-                            'ALTER TABLE "post" ALTER COLUMN [name] datetimeoffset NULL',
-                            'ALTER TABLE "post" ADD CONSTRAINT "DF_3b67503bc127f16f995481181a3" DEFAULT \'My post\' FOR [name]',
+                            'ALTER TABLE "post" ALTER COLUMN "name" datetimeoffset NULL',
+                            'ALTER TABLE "post" ADD CONSTRAINT "DF_3b67503bc127f16f995481181a3" DEFAULT \'My post\' FOR "name"',
                         ])
                     } else if (driver === "oracle") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
@@ -763,7 +763,7 @@ describe("schema builder > change column", () => {
                         ])
                     } else if (driver === "mssql") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
-                            'ALTER TABLE "post" ALTER COLUMN [name] varchar(80) NULL',
+                            'ALTER TABLE "post" ALTER COLUMN "name" nvarchar(80) NULL',
                         ])
                     } else if (driver === "oracle") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
@@ -1052,8 +1052,8 @@ describe("schema builder > change column", () => {
                         ])
                     } else if (driver === "mssql") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
-                            'UPDATE "post" SET [name] = LEFT([name], 40) WHERE DATALENGTH([name]) > 40',
-                            'ALTER TABLE "post" ALTER COLUMN [name] varchar(40) NULL',
+                            'UPDATE "post" SET "name" = LEFT("name", 40) WHERE DATALENGTH("name") > 40*2',
+                            'ALTER TABLE "post" ALTER COLUMN "name" nvarchar(40) NULL',
                         ])
                     } else if (driver === "oracle") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
