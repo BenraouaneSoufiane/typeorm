@@ -750,7 +750,7 @@ describe("schema builder > change column", () => {
                     if (driver === "postgres" || driver === "cockroachdb") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
                             driver === "postgres"
-                                ? `ALTER TABLE "post" ALTER COLUMN "name" TYPE varchar(80)`
+                                ? `ALTER TABLE "post" ALTER COLUMN "name" TYPE character varying(80)`
                                 : `ALTER TABLE "post" ALTER COLUMN "name" SET DATA TYPE varchar(80)`,
                         ])
                     } else if (
@@ -1038,7 +1038,7 @@ describe("schema builder > change column", () => {
                     if (driver === "postgres" || driver === "cockroachdb") {
                         expect(recordedSchemaChanges(recorded)).to.deep.equal([
                             driver === "postgres"
-                                ? `ALTER TABLE "post" ALTER COLUMN "name" TYPE varchar(40) USING substring("name" FROM 1 FOR 40)`
+                                ? `ALTER TABLE "post" ALTER COLUMN "name" TYPE character varying(40) USING substring("name" FROM 1 FOR 40)`
                                 : `ALTER TABLE "post" ALTER COLUMN "name" SET DATA TYPE varchar(40) USING substring("name" FROM 1 FOR 40)`,
                         ])
                     } else if (
